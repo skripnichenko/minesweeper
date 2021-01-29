@@ -8,7 +8,7 @@ function App() {
   const [cells, setCells] = useState(generateCells());
 
   const renderCells = (): React.ReactNode => {
-    return cells.map((row, i_row) => row.map((col, i_col) => <Button key={`${i_row}_${i_col}`} />))
+    return cells.map((row, i_row) => row.map((col, i_col) => <Button key={`${i_row}_${i_col}`} value={col.value} state={col.state} row={i_row} col={i_col} />))
   }
 
   return (<div className='App'>
