@@ -18,3 +18,10 @@ export enum CellValue {
   }
   
   export type Cell = { value: CellValue; state: CellState; red?: boolean };
+
+  export enum Face {
+    smile = '🙂',
+    oh = '😲',
+    won = '😎',
+    lost = '😣'
+  }
