@@ -48,23 +48,27 @@ export const generateCells = (): Cell[][] => {
     let bombsPlaced = 0;
 
     while (bombsPlaced < NUM_OF_BOMBS) {
-        const rowBomb = Math.floor(Math.random() * MAX_ROWS);
-        const colBomb = Math.floor(Math.random() * MAX_COLS);
-        const currentCell = cells[rowBomb][colBomb];
-
+        const randomRow = Math.floor(Math.random() * MAX_ROWS);
+        const randomCol = Math.floor(Math.random() * MAX_COLS);
+    
+        const currentCell = cells[randomRow][randomCol];
         if (currentCell.value !== CellValue.bomb) {
-            cells = cells.map((row, rowInd) => row.map((col, colInd) => {
-                if (rowBomb === rowInd && colBomb === colInd) {
-                    return {
-                        ...col,
-                        value: CellValue.bomb
-                    }
-                }
-                return col;
-            }))
+          cells = cells.map((row, rowIndex) =>
+            row.map((cell, colIndex) => {
+              if (randomRow === rowIndex && randomCol === colIndex) {
+                return {
+                  ...cell,
+                  value: CellValue.bomb
+                };
+              }
+    
+              return cell;
+            })
+          );
+          bombsPlaced++;
         }
-        bombsPlaced++;
-    }
+      }
+    
 
     for (let rowInd = 0; rowInd < MAX_ROWS; rowInd++) {
         for (let colInd = 0; colInd < MAX_COLS; colInd++) {

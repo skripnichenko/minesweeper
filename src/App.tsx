@@ -18,20 +18,20 @@ function App() {
   useEffect(() => {
     if (!lost && !won) {
       const handleDown = (): void => {
-      setFace(Face.oh);
-    }
-    const handleUp = (): void => {
-      setFace(Face.smile);
-    }
-    window.addEventListener('mousedown', handleDown);
-    window.addEventListener('mouseup', handleUp);
+        setFace(Face.oh);
+      }
+      const handleUp = (): void => {
+        setFace(Face.smile);
+      }
+      window.addEventListener('mousedown', handleDown);
+      window.addEventListener('mouseup', handleUp);
 
-    return () => {
-      window.removeEventListener('mousedown', handleDown);
-      window.removeEventListener('mouseup', handleUp);
+      return () => {
+        window.removeEventListener('mousedown', handleDown);
+        window.removeEventListener('mouseup', handleUp);
+      }
     }
-    }
-    
+
   });
 
   useEffect(() => {
@@ -61,11 +61,22 @@ function App() {
   }, [won]);
 
   const handleCellClick = (row: number, col: number) => (): void => {
-
+    let currentCells = cells.slice();
     if (lost) return;
 
-    let currentCells = cells.slice();
-    let curCell = cells[row][col];
+    if (!isStarted) {
+      let isABomb = currentCells[row][col].value === CellValue.bomb;
+      while (isABomb) {
+        currentCells = generateCells();
+        if (currentCells[row][col].value !== CellValue.bomb) {
+          isABomb = false;
+          break;
+        }
+      }
+      setIsStarted(true);
+    }
+
+    let curCell = currentCells[row][col];
 
     if ([CellState.flagged, CellState.visible].includes(curCell.state)) {
       return;
@@ -84,32 +95,19 @@ function App() {
       currentCells[row][col].state = CellState.visible;
     }
 
-
-
     let safeOpenCells = false;
 
     for (let row = 0; row < MAX_ROWS; row++) {
       for (let col = 0; col < MAX_COLS; col++) {
-        const curCell = currentCells[row][col];
+        const currentCell = currentCells[row][col];
 
-        if (curCell.state === CellState.open) {
+        if (currentCell.state === CellState.open && currentCell.value !== CellValue.bomb) {
           safeOpenCells = true;
           break;
         }
       }
     }
 
-    if (!isStarted) {
-      let isABomb = currentCells[row][col].value === CellValue.bomb;
-      while (isABomb) {
-        currentCells = generateCells();
-        if (currentCells[row][col].value !== CellValue.bomb) {
-          isABomb = false;
-          break;
-        }
-      }
-      setIsStarted(true);
-    }
 
     if (!safeOpenCells) {
       currentCells = currentCells.map(row =>
@@ -134,7 +132,7 @@ function App() {
     if (!isStarted) {
       return;
     }
-    
+
     const currentCells = cells.slice();
     const curCell = cells[row][col];
 
